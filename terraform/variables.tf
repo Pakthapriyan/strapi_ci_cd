@@ -22,3 +22,5 @@ variable "app_keys" {
 variable "api_token_salt" {
   type = string
 }
+variable "docker_username" {}
+variable "docker_password" {}
