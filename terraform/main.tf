@@ -59,19 +59,18 @@ resource "aws_instance" "strapi" {
 
 user_data = <<EOF
 #!/bin/bash
-set -e
-
-yum install -y docker
-systemctl enable docker
+yum update -y
+amazon-linux-extras install docker -y
 systemctl start docker
+systemctl enable docker
 
-sleep 40
+docker login -u ${var.docker_username} -p ${var.docker_password}
 
 docker pull ${var.image_name}:${var.image_tag}
 
-docker run -d --restart unless-stopped \
+docker run -d \
+  --name strapi \
   -p 1337:1337 \
-  -e NODE_ENV=production \
   -e ADMIN_JWT_SECRET=${var.admin_jwt_secret} \
   -e APP_KEYS=${var.app_keys} \
   -e API_TOKEN_SALT=${var.api_token_salt} \
