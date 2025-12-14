@@ -57,18 +57,27 @@ resource "aws_instance" "strapi" {
     volume_size = 30
   }
 
-  user_data = <<EOF
+user_data = <<EOF
 #!/bin/bash
-amazon-linux-extras install docker -y
+set -e
+
+yum install -y docker
 systemctl enable docker
 systemctl start docker
 
-docker run -d -p 1337:1337 \
+sleep 40
+
+docker pull ${var.image_name}:${var.image_tag}
+
+docker run -d --restart unless-stopped \
+  -p 1337:1337 \
+  -e NODE_ENV=production \
   -e ADMIN_JWT_SECRET=${var.admin_jwt_secret} \
   -e APP_KEYS=${var.app_keys} \
   -e API_TOKEN_SALT=${var.api_token_salt} \
   ${var.image_name}:${var.image_tag}
 EOF
+
 
   tags = {
     Name = "paktha-strapi-task6"
