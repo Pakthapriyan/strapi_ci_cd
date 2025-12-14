@@ -57,22 +57,6 @@ yum update -y
 amazon-linux-extras install docker -y
 systemctl start docker
 systemctl enable docker
-
-# Run Strapi in background (do NOT block Terraform)
-(
-  docker stop strapi || true
-  docker rm strapi || true
-  docker pull ${var.image_name}:${var.image_tag}
-  docker run -d \
-    --name strapi \
-    -p 1337:1337 \
-    -e ADMIN_JWT_SECRET=${var.admin_jwt_secret} \
-    -e APP_KEYS=${var.app_keys} \
-    -e API_TOKEN_SALT=${var.api_token_salt} \
-    ${var.image_name}:${var.image_tag}
-) >/var/log/strapi-startup.log 2>&1 &
-
-exit 0
 EOF
 
 
