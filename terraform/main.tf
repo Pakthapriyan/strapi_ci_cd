@@ -59,22 +59,43 @@ resource "aws_instance" "strapi" {
 
 user_data = <<EOF
 #!/bin/bash
-yum update -y
-amazon-linux-extras install docker -y
-systemctl start docker
-systemctl enable docker
+set -e
 
+# Install Docker
+yum update -y
+yum install -y docker
+systemctl enable docker
+systemctl start docker
+
+# Create app directory
+mkdir -p /home/ec2-user/strapi
+cd /home/ec2-user/strapi
+
+# Create environment file for Strapi
+cat <<EOT > .env
+HOST=0.0.0.0
+PORT=1337
+NODE_ENV=production
+
+APP_KEYS=${var.app_keys}
+API_TOKEN_SALT=${var.api_token_salt}
+ADMIN_JWT_SECRET=${var.admin_jwt_secret}
+EOT
+
+# Login to Docker Hub
 docker login -u ${var.docker_username} -p ${var.docker_password}
 
+# Pull image
 docker pull ${var.image_name}:${var.image_tag}
 
+# Run Strapi container
 docker run -d \
   --name strapi \
+  --env-file /home/ec2-user/strapi/.env \
   -p 1337:1337 \
-  -e ADMIN_JWT_SECRET=${var.admin_jwt_secret} \
-  -e APP_KEYS=${var.app_keys} \
-  -e API_TOKEN_SALT=${var.api_token_salt} \
+  --restart unless-stopped \
   ${var.image_name}:${var.image_tag}
+
 EOF
 
 
