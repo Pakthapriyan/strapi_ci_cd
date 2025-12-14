@@ -43,6 +43,10 @@ resource "aws_instance" "strapi" {
   instance_type = "t2.micro"
   key_name      = var.key_name
   security_groups = [aws_security_group.strapi_sg.name]
+  root_block_device {
+    volume_size = 30
+    volume_type = "gp3"
+  }
 
 user_data = <<EOF
 #!/bin/bash
