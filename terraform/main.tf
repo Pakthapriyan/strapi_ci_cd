@@ -38,9 +38,18 @@ resource "aws_security_group" "strapi_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
+data "aws_ami" "amazon_linux" {
+  most_recent = true
+  owners      = ["amazon"]
+
+  filter {
+    name   = "name"
+    values = ["amzn2-ami-hvm-*-x86_64-gp2"]
+  }
+}
 
 resource "aws_instance" "strapi" {
-  ami           = "ami-02ae8f3e0b6c9b4f8" # Amazon Linux 2 (eu-north-1)
+  ami           = data.aws_ami.amazon_linux.id
   instance_type = "t3.micro"
   security_groups = [aws_security_group.strapi_sg.name]
 
