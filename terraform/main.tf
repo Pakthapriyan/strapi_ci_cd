@@ -1,4 +1,6 @@
 terraform {
+  required_version = ">= 1.5.0"
+
   required_providers {
     aws = {
       source  = "hashicorp/aws"
@@ -8,13 +10,12 @@ terraform {
 }
 
 provider "aws" {
-  region     = var.aws_region
-  access_key = var.aws_access_key
-  secret_key = var.aws_secret_key
+  region = var.aws_region
 }
 
 resource "aws_security_group" "strapi_sg" {
-  name = "strapi-sg"
+  name        = "paktha-strapi-sg"
+  description = "Allow SSH and Strapi"
 
   ingress {
     from_port   = 22
@@ -39,24 +40,32 @@ resource "aws_security_group" "strapi_sg" {
 }
 
 resource "aws_instance" "strapi" {
-  ami           = var.ami_id
-  instance_type = "t2.micro"
-  key_name      = var.key_name
+  ami           = "ami-02ae8f3e0b6c9b4f8" # Amazon Linux 2 (eu-north-1)
+  instance_type = "t3.micro"
   security_groups = [aws_security_group.strapi_sg.name]
+
   root_block_device {
     volume_size = 30
-    volume_type = "gp3"
   }
 
-user_data = <<EOF
+  user_data = <<EOF
 #!/bin/bash
-set -x
-
-# Install Docker fast
 amazon-linux-extras install docker -y
-systemctl start docker
 systemctl enable docker
+systemctl start docker
+
+docker run -d -p 1337:1337 \
+  -e ADMIN_JWT_SECRET=${var.admin_jwt_secret} \
+  -e APP_KEYS=${var.app_keys} \
+  -e API_TOKEN_SALT=${var.api_token_salt} \
+  ${var.image_name}:${var.image_tag}
 EOF
 
+  tags = {
+    Name = "paktha-strapi-task6"
+  }
+}
 
+output "public_ip" {
+  value = aws_instance.strapi.public_ip
 }
