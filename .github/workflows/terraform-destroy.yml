@@ -1,4 +1,4 @@
-name: Destroy Terraform
+name: CD - Terraform Destroy
 
 on:
   workflow_dispatch:
@@ -8,11 +8,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
 
       - name: Terraform Init
         working-directory: terraform
