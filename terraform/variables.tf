@@ -1,19 +1,24 @@
-variable "aws_region" {}
-variable "aws_access_key" {}
-variable "aws_secret_key" {}
-variable "ami_id" {
-  default = "ami-0f3c7d07486cad139"
+variable "aws_region" {
+  type    = string
+  default = "eu-north-1"
 }
 
-
-variable "key_name" {
-  default = "your-keypair-name"
+variable "image_name" {
+  type = string
 }
 
-variable "image_name" {}
-variable "image_tag" {}
+variable "image_tag" {
+  type = string
+}
 
-variable "admin_jwt_secret" {}
-variable "app_keys" {}
-variable "api_token_salt" {}
+variable "admin_jwt_secret" {
+  type = string
+}
 
+variable "app_keys" {
+  type = string
+}
+
+variable "api_token_salt" {
+  type = string
+}
