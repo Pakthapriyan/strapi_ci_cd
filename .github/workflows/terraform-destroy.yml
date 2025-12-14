@@ -1,25 +1,13 @@
-
 name: CD - Terraform Destroy
 
 on:
   workflow_dispatch:
-    inputs:
-      confirm:
-        description: "Type DESTROY to confirm"
-        required: true
 
 jobs:
   destroy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Validate confirmation
-        run: |
-          if [ "${{ github.event.inputs.confirm }}" != "DESTROY" ]; then
-            echo "Confirmation failed. Type DESTROY to proceed."
-            exit 1
-          fi
-
       - name: Checkout repo
         uses: actions/checkout@v4
 
@@ -41,3 +29,4 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: eu-north-1
+
