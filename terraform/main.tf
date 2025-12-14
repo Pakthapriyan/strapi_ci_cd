@@ -44,10 +44,10 @@ resource "aws_instance" "strapi" {
   key_name      = var.key_name
   security_groups = [aws_security_group.strapi_sg.name]
 
-  user_data = <<EOF
+user_data = <<EOF
 #!/bin/bash
-apt update -y
-apt install docker.io -y
+yum update -y
+amazon-linux-extras install docker -y
 systemctl start docker
 systemctl enable docker
 
@@ -64,4 +64,5 @@ docker run -d \
   -e API_TOKEN_SALT=${var.api_token_salt} \
   ${var.image_name}:${var.image_tag}
 EOF
+
 }
