@@ -1,10 +1,10 @@
 variable "aws_region" {}
 variable "aws_access_key" {}
 variable "aws_secret_key" {}
-
 variable "ami_id" {
-  default = "ami-0c1ac872a4eae2ee0"
+  default = "ami-0f3c7d07486cad139"
 }
+
 
 variable "key_name" {
   default = "your-keypair-name"
