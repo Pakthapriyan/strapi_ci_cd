@@ -53,7 +53,6 @@ user_data = <<EOF
 set -x
 
 # Install Docker fast
-yum update -y
 amazon-linux-extras install docker -y
 systemctl start docker
 systemctl enable docker
