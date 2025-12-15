@@ -52,6 +52,7 @@ resource "aws_instance" "strapi" {
   ami           = data.aws_ami.amazon_linux.id
   instance_type = "t3.micro"
   security_groups = [aws_security_group.strapi_sg.name]
+  key_name = "paktha-key"
 
   root_block_device {
     volume_size = 30
