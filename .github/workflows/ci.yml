@@ -15,7 +15,13 @@ jobs:
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
       - name: Build Docker image
-        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/strapi-app:${{ github.sha }} .
+        run: |
+          docker build \
+            -t ${{ secrets.DOCKER_USERNAME }}/strapi-app:${{ github.sha }} \
+            -t ${{ secrets.DOCKER_USERNAME }}/strapi-app:latest \
+            .
 
-      - name: Push Docker image
-        run: docker push ${{ secrets.DOCKER_USERNAME }}/strapi-app:${{ github.sha }}
+      - name: Push Docker images
+        run: |
+          docker push ${{ secrets.DOCKER_USERNAME }}/strapi-app:${{ github.sha }}
+          docker push ${{ secrets.DOCKER_USERNAME }}/strapi-app:latest
